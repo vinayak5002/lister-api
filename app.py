@@ -1,15 +1,15 @@
-from flask import Flask, Request, request, jsonify, json
+from flask import Flask, request, jsonify, json
+import requests,json
 from bs4 import BeautifulSoup
 app = Flask(__name__)
 
-@app.route('/')
-def index():
-    return "<h1>Yokoso, Lister api ye</h1>"
+@app.route('/', methods=['GET','POST'])
+def welcome():
+    return "Welcome to lister API"
 
-
-@app.route('/<string:name>/')
+@app.route('/<string:name>/', methods=['GET','POST'])
 def details(name):
-    source = Request.get('https://animixplay.to/v1/'+name).text
+    source = requests.get('https://animixplay.to/v1/'+name).text
     soup = BeautifulSoup(source, "html.parser")
 
     if soup.select_one('span.animetitle').get_text() == 'Generating...':
@@ -25,7 +25,6 @@ def details(name):
         'status' : status,
         'epstotal' : epstotal
     }
-
 
 if __name__ == '__main__':
     app.run(threaded=True, port=5000)
