@@ -5,7 +5,7 @@ app = Flask(__name__)
 
 @app.route('/', methods=['GET','POST'])
 def welcome():
-    return "Welcome to lister API"
+    return '<h1 style="text-align: center" >Yokoso, Lister api ye</h1>'
 
 @app.route('/<string:name>/', methods=['GET','POST'])
 def details(name):
