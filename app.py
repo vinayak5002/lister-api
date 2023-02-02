@@ -9,16 +9,11 @@ def welcome():
 
 @app.route('/<string:name>/', methods=['GET','POST'])
 def details(name):
-    source = requests.get('https://animixplay.to/v1/'+name).text
+    source = requests.get('https://ww1.9anime2.com/watch/'+name).text
     soup = BeautifulSoup(source, "html.parser")
 
-    if soup.select_one('span.animetitle').get_text() == 'Generating...':
-        return {
-            'error' : True,
-        }
-
-    status = soup.select_one('span#status').get_text().split(' ')[2]
-    epstotal = json.loads(soup.select_one('div#epslistplace').get_text())['eptotal']
+    status = soup.select_one('div.col1').find_all('div')[2].text.split()[1]
+    epstotal = len(soup.select_one('div.body').find_all('li'))
 
     return {
         'error' : False,
