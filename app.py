@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify, json
-import requests,json
+import requests,json,re
 from bs4 import BeautifulSoup
 app = Flask(__name__)
 
@@ -14,11 +14,32 @@ def details(name):
 
     status = soup.select_one('div.col1').find_all('div')[2].text.split()[1]
     epstotal = len(soup.select_one('div.body').find_all('li'))
+    title = soup.find_all('h2',{'itemprop':'name'})[0].text
+
+    source = requests.get('https://animeschedule.net/').text
+    soup = BeautifulSoup(source, "html.parser")
+
+    weeks = soup.find_all('div',{'class':'timetable-column'})
+
+    days = {
+        'Monday' : 0,
+        'Tuesday' : 1,
+        'Wednesday' : 3,
+        'Thursday' : 4,
+        'Friday' : 5,
+        'Saturday' : 6,
+        'Sunday' : 7
+    }
+    for i in range(len(weeks)):
+        if re.findall(title, weeks[i].text) != []:
+            airDay = days[weeks[i].attrs['class'][-1]]
+            break
 
     return {
         'error' : False,
         'status' : status,
-        'epstotal' : epstotal
+        'epstotal' : epstotal,
+        'airDay' : airDay
     }
 
 if __name__ == '__main__':
