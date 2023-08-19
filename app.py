@@ -21,26 +21,34 @@ def details(name):
 
     weeks = soup.find_all('div',{'class':'timetable-column'})
 
-    days = {
-        'Monday' : 0,
-        'Tuesday' : 1,
-        'Wednesday' : 3,
-        'Thursday' : 4,
-        'Friday' : 5,
-        'Saturday' : 6,
-        'Sunday' : 7
-    }
-    for i in range(len(weeks)):
-        if re.findall(title, weeks[i].text) != []:
-            airDay = days[weeks[i].attrs['class'][-1]]
-            break
+    if status == "Ongoing":
 
-    return {
-        'error' : False,
-        'status' : status,
-        'epstotal' : epstotal,
-        'airDay' : airDay
-    }
+        days = {
+            'Monday' : 0,
+            'Tuesday' : 1,
+            'Wednesday' : 3,
+            'Thursday' : 4,
+            'Friday' : 5,
+            'Saturday' : 6,
+            'Sunday' : 7
+        }
+        for i in range(len(weeks)):
+            if re.search(title, weeks[i].text, re.IGNORECASE) != None:
+                airDay = days[weeks[i].attrs['class'][-1]]
+                break
+
+        return {
+            'error' : False,
+            'status' : status,
+            'epstotal' : epstotal,
+            'airDay' : airDay
+        }
+    else:
+        return {
+            'error' : False,
+            'status' : status,
+            'epstotal' : epstotal
+        }
 
 if __name__ == '__main__':
     app.run(threaded=True, port=5000)
